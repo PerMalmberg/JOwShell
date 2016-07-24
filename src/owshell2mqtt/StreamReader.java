@@ -12,7 +12,7 @@ import java.util.List;
 
 public class StreamReader extends Thread {
 	private final InputStream is;
-	private ArrayList<String> myOutput = new ArrayList<>();
+	private final ArrayList<String> myOutput = new ArrayList<>();
 
 	public StreamReader(InputStream is) {
 		this.is = is;

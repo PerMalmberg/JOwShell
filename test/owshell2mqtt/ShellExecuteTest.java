@@ -4,8 +4,8 @@
 package owshell2mqtt;
 
 import org.junit.Test;
-
-import java.util.List;
+import owshell2mqtt.system.IExecute;
+import owshell2mqtt.system.ShellExecute;
 
 import static org.junit.Assert.*;
 
@@ -13,18 +13,19 @@ public class ShellExecuteTest {
 
 	@Test
 	public void testExecute() throws Exception {
-		ShellExecute se = new ShellExecute("java", "-version");
-		assertEquals(0, se.execute(1000, 1));
+		IExecute se = new ShellExecute();
+		assertEquals(1, se.execute(1, "java"));
 		assertEquals(null, se.getLastException());
 	}
 
 	@Test
 	public void testNewArguments() throws Exception {
-		ShellExecute se = new ShellExecute("java", "-version");
-		assertEquals(0, se.execute(1000, 1));
+		IExecute se = new ShellExecute();
+		se.setTimeout(1000);
+		assertEquals(0, se.execute(1, "java", "-version"));
 		assertTrue(se.getOutput().toString().contains("java version"));
 		assertEquals(null, se.getLastException());
-		assertEquals(0, se.execute(1000, 1, "-help"));
+		assertEquals(0, se.execute(1, "java", "-help"));
 		assertFalse(se.getOutput().toString().contains("java version"));
 		assertTrue(se.getOutput().toString().contains("Usage:"));
 		assertEquals(null, se.getLastException());
@@ -32,8 +33,8 @@ public class ShellExecuteTest {
 
 	@Test
 	public void testUnknownCommand() throws Exception {
-		ShellExecute se = new ShellExecute("qwerty123");
-		assertEquals(1, se.execute(1000, 1));
+		IExecute se = new ShellExecute();
+		assertEquals(1, se.execute(1, "qwerty123"));
 		assertNotNull(se.getLastException());
 	}
 }

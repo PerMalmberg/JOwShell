@@ -3,6 +3,7 @@
 
 package owshell2mqtt;
 
+import owshell2mqtt.items.OwData;
 import owshell2mqtt.items.OwDevice;
 import owshell2mqtt.system.ShellExecute;
 
@@ -14,11 +15,27 @@ class OWShell2MQTT {
 		Discovery discovery = new Discovery("localhost", exec);
 		if (discovery.discoverTree()) {
 			HashMap<String, OwDevice> device = discovery.getNetwork().getAllDevices();
-			device.values().forEach(item -> System.out.println(item.getName()));
+			//device.values().forEach(OWShell2MQTT::printData);
+			printData(device.get("26.24CAB5000000"));
 			System.exit(0);
 		} else {
 			System.out.println("Discovery failed");
 			System.exit(1);
+		}
+
+	}
+
+	private static void printData(OwDevice d) {
+		HashMap<String, OwData> data = d.getData();
+
+		System.out.println( "====" + d.getName() + "====== ");
+		ShellExecute exec = new ShellExecute();
+		exec.setTimeout(2000); // Need extra time for temperature conversions.
+
+		for (String name : data.keySet()) {
+			OwData owData = data.get(name);
+			String readData = owData.read(exec);
+			System.out.println(owData.getFullPath() + ":" + readData );
 		}
 
 	}

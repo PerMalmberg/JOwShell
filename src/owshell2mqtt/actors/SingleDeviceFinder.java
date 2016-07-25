@@ -3,6 +3,7 @@
 
 package owshell2mqtt.actors;
 
+import owshell2mqtt.items.OwData;
 import owshell2mqtt.items.OwDevice;
 import owshell2mqtt.items.OwDirectory;
 import owshell2mqtt.items.OwItem;
@@ -34,6 +35,11 @@ public class SingleDeviceFinder implements IItemActor {
 
 		// If found, return false to stop processing
 		return myDev == null;
+	}
+
+	@Override
+	public boolean act(OwData data) {
+		return true;
 	}
 
 	public OwDevice getDevice() {

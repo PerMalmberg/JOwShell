@@ -10,8 +10,8 @@ import owshell2mqtt.items.OwItem;
 
 import java.util.HashMap;
 
-public class DeviceGatherer implements IItemActor {
-	private final HashMap<String, OwDevice> myDevices = new HashMap<>();
+public class PropertyGatherer implements IItemActor {
+	private final HashMap<String, OwData> myData = new HashMap<>();
 
 	@Override
 	public boolean act(OwItem item) {
@@ -25,16 +25,16 @@ public class DeviceGatherer implements IItemActor {
 
 	@Override
 	public boolean act(OwDevice device) {
-		myDevices.put(device.getName(), device);
 		return true;
 	}
 
 	@Override
 	public boolean act(OwData data) {
+		myData.put(data.getFullPropertyName(), data);
 		return true;
 	}
 
-	public HashMap<String, OwDevice> getDevices() {
-		return myDevices;
+	public HashMap<String,OwData> getData(){
+		return myData;
 	}
 }

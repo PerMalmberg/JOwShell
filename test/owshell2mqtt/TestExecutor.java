@@ -6,6 +6,7 @@ package owshell2mqtt;
 import owshell2mqtt.system.IExecute;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 public class TestExecutor implements IExecute {
 	private final String myRoot;
 	private List<String> myOutput;
+	private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
 	public TestExecutor(String root) {
 		myRoot = root;
@@ -38,8 +40,36 @@ public class TestExecutor implements IExecute {
 	}
 
 	private boolean readData(List<String> cmd) {
+		boolean res = false;
+
 		myOutput = new ArrayList<>();
-		return false;
+
+		byte[] data = null;
+
+		String path = findPath(cmd);
+		Path p = Paths.get(myRoot, path);
+		File f = p.toFile();
+		if (f.exists()) {
+			try (FileInputStream fi = new FileInputStream(f)) {
+				data = new byte[(int) f.length()];
+				fi.read(data);
+			} catch (Exception e) {
+				// Nada
+				data = null;
+			}
+		}
+
+		boolean asHex = cmd.contains("--hex");
+		if (data != null) {
+			if (asHex) {
+				myOutput.add(bytesToHex(data));
+			} else {
+				myOutput.add(new String(data));
+			}
+			res = true;
+		}
+
+		return res;
 	}
 
 	private boolean readDir(List<String> cmd) {
@@ -52,7 +82,7 @@ public class TestExecutor implements IExecute {
 			File f = p.toFile();
 			if (f.exists()) {
 				File[] children = f.listFiles();
-				if( children != null ) {
+				if (children != null) {
 					for (File c : children) {
 						// Replace \ with /
 						String currentPath = c.getPath().replace("\\", "/");
@@ -94,5 +124,15 @@ public class TestExecutor implements IExecute {
 
 	public List<String> getOutput() {
 		return myOutput;
+	}
+
+	public static String bytesToHex(byte[] bytes) {
+		char[] hexChars = new char[bytes.length * 2];
+		for ( int j = 0; j < bytes.length; j++ ) {
+			int v = bytes[j] & 0xFF;
+			hexChars[j * 2] = hexArray[v >>> 4];
+			hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+		}
+		return new String(hexChars);
 	}
 }

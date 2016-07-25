@@ -3,65 +3,35 @@
 
 package owshell2mqtt.items;
 
-import owshell2mqtt.system.IExecute;
 import owshell2mqtt.actors.IItemActor;
-import owshell2mqtt.actors.SingleDeviceFinder;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import owshell2mqtt.system.IExecute;
 
 public class OwDirectory extends OwItem {
-	private final Pattern myAddressPattern = Pattern.compile("^([a-zA-Z0-9]{14})$");
 
-	public OwDirectory(String fullPath) {
-		super(fullPath);
+	public OwDirectory(String fullPath, String host) {
+		super(fullPath, host);
 	}
 
 	protected void createItemFormPath(String fullPath) {
 		if (isPathToDevice(fullPath)) {
-			add(new OwDevice(fullPath));
+			add(new OwDevice(fullPath, myHost));
 		} else if (fullPath.endsWith("/")) {
-			add(new OwDirectory(fullPath));
+			add(new OwDirectory(fullPath, myHost));
 		} else {
-			add(new OwData(fullPath));
+			add(new OwData(fullPath, myHost));
 		}
 	}
 
 	@Override
-	public void discover(IExecute execute, String host) {
-		if (execute.execute(1, "owdir", "--dir", "-s", host, getFullPath()) == 0) {
+	public void discover(IExecute execute) {
+		if (execute.execute(1, "owdir", "--dir", "-s", myHost, getFullPath()) == 0) {
 			execute.getOutput().forEach(this::createItemFormPath);
-			myChild.values().forEach(item -> item.discover(execute, host));
+			myChild.values().forEach(item -> item.discover(execute));
 		}
-	}
-
-	public OwDevice findDevice(String address) {
-		String toFind = null;
-		if (isDeviceAddress(address)) {
-			toFind = address.substring(0, 2) + "." + address.substring(2, address.length());
-		} else if (matchesDeviceAddressWithFamily(address)) {
-			toFind = address;
-		}
-
-		OwDevice dev = null;
-
-		if( toFind != null) {
-			SingleDeviceFinder finder = new SingleDeviceFinder(toFind);
-			traverseTree( finder );
-			dev = finder.getDevice();
-		}
-
-		return dev;
 	}
 
 	@Override
-	protected boolean traverseTreeWithActor(IItemActor actor)
-	{
+	protected boolean traverseTreeWithActor(IItemActor actor) {
 		return !actor.act(this) || traverseTree(actor);
-	}
-
-	private boolean isDeviceAddress(String address) {
-		Matcher m = myAddressPattern.matcher(address);
-		return m.matches();
 	}
 }

@@ -8,19 +8,17 @@ import owshell2mqtt.system.IExecute;
 public class Discovery {
 	private final IExecute myExec;
 
-	private final Network myNetwork = new Network();
-	private final String myHost;
-
+	private final Network myNetwork;
 
 	public Discovery(String host, IExecute execute) {
-		myHost = host;
 		myExec = execute;
+		myNetwork = new Network(host);
 	}
 
 	public boolean discoverTree() {
 		myNetwork.clear();
 
-		myNetwork.discover(myExec, myHost);
+		myNetwork.discover(myExec);
 		return myNetwork.hasDevices();
 	}
 

@@ -3,6 +3,7 @@
 
 package owshell2mqtt.actors;
 
+import owshell2mqtt.items.OwData;
 import owshell2mqtt.items.OwDevice;
 import owshell2mqtt.items.OwDirectory;
 import owshell2mqtt.items.OwItem;
@@ -31,4 +32,12 @@ public interface IItemActor {
 	 * @return true if further operations should be performed, false if not.
 	 */
 	boolean act(OwDevice device);
+
+	/**
+	 * Performs an operation on the data.
+	 *
+	 * @param data The data
+	 * @return true if further operations should be performed, false if not.
+	 */
+	boolean act(OwData data);
 }

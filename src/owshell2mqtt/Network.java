@@ -14,8 +14,8 @@ import java.util.List;
 public class Network extends OwDirectory {
 	private HashMap<String, OwDevice> myAllDevices = new HashMap<>();
 
-	public Network() {
-		super("/");
+	public Network( String host) {
+		super("/", host);
 	}
 
 	public boolean hasDevices() {
@@ -27,12 +27,12 @@ public class Network extends OwDirectory {
 		super.clear();
 	}
 
-	public void discover(IExecute exec, String host) {
+	public void discover(IExecute exec) {
 		// Read the root of the network
-		if (exec.execute(1, "owdir", "-s", host, "/") == 0) {
+		if (exec.execute(1, "owdir", "-s", myHost, "/") == 0) {
 			createItems(exec.getOutput());
 			// Start recursive discovery of devices
-			myChild.values().forEach(item -> item.discover(exec, host));
+			myChild.values().forEach(item -> item.discover(exec));
 
 			// Make a one-time traversal to get all the found devices.
 			DeviceGatherer gatherer = new DeviceGatherer();

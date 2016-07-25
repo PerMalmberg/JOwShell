@@ -19,7 +19,7 @@ public class Network extends OwDirectory {
 	}
 
 	public boolean hasDevices() {
-		return countDevices() > 0;
+		return myAllDevices.size() > 0;
 	}
 
 	public void clear() {

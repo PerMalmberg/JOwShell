@@ -12,13 +12,6 @@ public class OwDevice extends OwDirectory {
 	}
 
 	@Override
-	public int countDevices()
-	{
-		// Count ourselves.
-		return 1;
-	}
-
-	@Override
 	protected boolean traverseTreeWithActor(IItemActor actor)
 	{
 		return !actor.act(this) || traverseTree(actor);

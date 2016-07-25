@@ -64,20 +64,15 @@ public abstract class OwItem {
 		return myChild;
 	}
 
-	public int countDevices() {
-		int i = 0;
-
-		for (OwItem item : myChild.values()) {
-			i += item.countDevices();
-		}
-
-		return i;
-	}
-
 	protected boolean traverseTreeWithActor(IItemActor actor) {
 		return !actor.act(this) || traverseTree(actor);
 	}
 
+	/**
+	 * Traverses the tree with the provided actor.
+	 * @param actor The actor
+	 * @return true if the actor says to stop traversal, otherwise false.
+	 */
 	protected boolean traverseTree(IItemActor actor) {
 		OwItem[] children = myChild.values().toArray(new OwItem[myChild.values().size()]);
 

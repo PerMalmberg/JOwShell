@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="OwShell2MQTT">
-    <output-path>$PROJECT_DIR$/out/artifacts/OwShell2MQTT</output-path>
-    <root id="archive" name="OwShell2MQTT.jar">
-      <element id="module-output" name="OwShell2MQTT" />
-    </root>
-  </artifact>
-</component>

@@ -9,13 +9,13 @@ import owshell2mqtt.system.ShellExecute;
 
 import java.util.HashMap;
 
-class OWShell2MQTT {
+class JOwShell {
 	public static void main(String[] args) {
 		ShellExecute exec = new ShellExecute();
 		Discovery discovery = new Discovery("localhost", exec);
 		if (discovery.discoverTree()) {
 			HashMap<String, OwDevice> device = discovery.getNetwork().getAllDevices();
-			//device.values().forEach(OWShell2MQTT::printData);
+			//device.values().forEach(JOwShell::printData);
 			printData(device.get("26.24CAB5000000"));
 			System.exit(0);
 		} else {

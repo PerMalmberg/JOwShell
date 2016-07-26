@@ -1,2 +1,2 @@
-# OwShell2MQTT
-MQTT bridge to 1-wire shell commands
+# JOwShell
+Java frontend to ow-shell (Shell commands for OWFS)

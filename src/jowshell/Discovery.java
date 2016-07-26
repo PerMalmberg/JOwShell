@@ -3,17 +3,17 @@
 
 package jowshell;
 
-import jowshell.system.IExecute;
+import jowshell.system.ICommandExecution;
 import logging.ILogger;
 
 public class Discovery {
-	private final IExecute myExec;
+	private final ICommandExecution myExec;
 	private final ILogger myLogger;
 
 	private final Network myNetwork;
 
-	public Discovery(String host, IExecute execute, ILogger logger) {
-		myExec = execute;
+	public Discovery(String host, ICommandExecution cmdExecute, ILogger logger) {
+		myExec = cmdExecute;
 		myLogger = logger;
 		myNetwork = new Network(host, myLogger);
 	}

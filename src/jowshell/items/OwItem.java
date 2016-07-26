@@ -4,7 +4,7 @@
 package jowshell.items;
 
 import jowshell.actors.IItemActor;
-import jowshell.system.IExecute;
+import jowshell.system.ICommandExecution;
 import logging.ILogger;
 
 import java.nio.file.Path;
@@ -43,7 +43,7 @@ public abstract class OwItem {
 		return p.getFileName().toString();
 	}
 
-	public void discover(IExecute execute) {
+	public void discover(ICommandExecution execute) {
 		myChild.values().forEach(item -> discover(execute));
 	}
 

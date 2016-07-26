@@ -5,13 +5,15 @@ package jowshell;
 
 import jowshell.items.OwData;
 import jowshell.items.OwDevice;
+import jowshell.system.ICommandExecution;
+import jowshell.system.IExecute;
 import jowshell.system.ShellExecute;
 import logging.ILogger;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
-class JOwShell  implements ILogger {
+class JOwShell implements ILogger, ICommandExecution {
 	private ShellExecute exec;
 
 	public static void main(String[] args) {
@@ -19,13 +21,12 @@ class JOwShell  implements ILogger {
 		jow.exec(args);
 	}
 
-	public void exec(String[] args)
-	{
+	public void exec(String[] args) {
 		exec = new ShellExecute(this);
 		System.out.println("JOwShell: Java frontend for ow-shell (OWFS shell commands)");
 
-		if( args.length == 1) {
-			Discovery discovery = new Discovery(args[0], exec, this);
+		if (args.length == 1) {
+			Discovery discovery = new Discovery(args[0], this, this);
 			if (discovery.discoverTree()) {
 				HashMap<String, OwDevice> device = discovery.getNetwork().getAllDevices();
 				device.values().forEach(this::printData);
@@ -34,8 +35,7 @@ class JOwShell  implements ILogger {
 				error("Discovery failed");
 				System.exit(1);
 			}
-		}
-		else {
+		} else {
 			System.out.println("Usage: JOwShell <host>");
 		}
 	}
@@ -43,29 +43,52 @@ class JOwShell  implements ILogger {
 	private void printData(OwDevice d) {
 		HashMap<String, OwData> data = d.getData();
 
-		System.out.println( "====" + d.getName() + "====== ");
+		System.out.println("====" + d.getName() + "====== ");
 		exec.setTimeout(2000); // Some read operations takes longer, such as temperature conversions.
 
 		for (String name : data.keySet()) {
 			OwData owData = data.get(name);
-			String readData = owData.read(exec);
-			System.out.println(owData.getFullPath() + ":" + readData );
+			String readData = owData.read(this);
+			System.out.println(owData.getFullPath() + ":" + readData);
 		}
 	}
 
 	@Override
 	public void debug(String msg) {
-		System.out.println( "[DEBUG]" + msg);
+		System.out.println("[DEBUG]" + msg);
 	}
 
 	@Override
 	public void error(String msg) {
-		System.out.println( "[ERROR] " + msg);
+		System.out.println("[ERROR] " + msg);
 	}
 
 	@Override
 	public void error(Exception ex) {
 		error(ex.getMessage());
 		error(Arrays.toString(ex.getStackTrace()));
+	}
+
+	@Override
+	public String getOwRead() {
+		// Assume command is on the path
+		return "owread";
+	}
+
+	@Override
+	public String getOwDir() {
+		// Assume command is on the path
+		return "owdir";
+	}
+
+	@Override
+	public String getOwWrite() {
+		// Assume command is on the path
+		return "owwrite";
+	}
+
+	@Override
+	public IExecute getExec() {
+		return exec;
 	}
 }

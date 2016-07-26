@@ -5,6 +5,7 @@ package jowshell.items;
 
 import jowshell.actors.IItemActor;
 import jowshell.items.DataTypes.DataType;
+import jowshell.system.ICommandExecution;
 import jowshell.system.IExecute;
 import logging.ILogger;
 
@@ -29,12 +30,12 @@ public class OwData extends OwItem {
 	 * @param exec The executor
 	 * @return The data as a string, or null on failure.
 	 */
-	public String read(IExecute exec) {
+	public String read(ICommandExecution exec) {
 		String res = null;
 
 		if (getDataDetails(exec)) {
 			if (readData(exec, structInfo)) {
-				List<String> readData = exec.getOutput();
+				List<String> readData = exec.getExec().getOutput();
 				if (readData.size() > 0) {
 					res = readData.get(0);
 				} else {
@@ -46,10 +47,10 @@ public class OwData extends OwItem {
 		return res;
 	}
 
-	private boolean readData(IExecute exec, StructureInfo structInfo) {
+	private boolean readData(ICommandExecution exec, StructureInfo structInfo) {
 
 		List<String> cmd = new ArrayList<>();
-		cmd.add("owread");
+		cmd.add(exec.getOwRead());
 		cmd.add("-s");
 		cmd.add(myHost);
 		if (structInfo.getType() == DataType.b) {
@@ -57,14 +58,15 @@ public class OwData extends OwItem {
 		}
 		cmd.add(getFullPath());
 
-		return exec.execute(1, cmd.toArray(new String[cmd.size()])) == 0;
+		return exec.getExec().execute(1, cmd.toArray(new String[cmd.size()])) == 0;
 	}
 
-	private boolean getDataDetails(IExecute exec) {
+	private boolean getDataDetails(ICommandExecution cmdExec) {
 		if (structInfo == null) {
 			myLogger.debug("Reading structure info for " + getFullPath());
 			// Read structure info for this data item
-			if (exec.execute(1, "owread", "-s", myHost, "/structure/" + getFamilyFromLastDeviceInPath() + "/" + getFullPropertyName()) == 0) {
+			IExecute exec = cmdExec.getExec();
+			if (exec.execute(1, cmdExec.getOwRead(), "-s", myHost, "/structure/" + getFamilyFromLastDeviceInPath() + "/" + getFullPropertyName()) == 0) {
 				String info = exec.getOutput().get(0);
 				try {
 					structInfo = new StructureInfo(info);

@@ -4,6 +4,7 @@
 package jowshell.items;
 
 import jowshell.actors.IItemActor;
+import jowshell.system.ICommandExecution;
 import jowshell.system.IExecute;
 import logging.ILogger;
 
@@ -24,10 +25,11 @@ public class OwDirectory extends OwItem {
 	}
 
 	@Override
-	public void discover(IExecute execute) {
-		if (execute.execute(1, "owdir", "--dir", "-s", myHost, getFullPath()) == 0) {
-			execute.getOutput().forEach(this::createItemFormPath);
-			myChild.values().forEach(item -> item.discover(execute));
+	public void discover(ICommandExecution cmdExec) {
+		IExecute exec = cmdExec.getExec();
+		if (exec.execute(1, cmdExec.getOwDir(), "--dir", "-s", myHost, getFullPath()) == 0) {
+			exec.getOutput().forEach(this::createItemFormPath);
+			myChild.values().forEach(item -> item.discover(cmdExec));
 		}
 	}
 

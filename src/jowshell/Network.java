@@ -6,6 +6,7 @@ package jowshell;
 import jowshell.actors.DeviceGatherer;
 import jowshell.items.OwDevice;
 import jowshell.items.OwDirectory;
+import jowshell.system.ICommandExecution;
 import jowshell.system.IExecute;
 import logging.ILogger;
 
@@ -29,12 +30,13 @@ public class Network extends OwDirectory {
 		super.clear();
 	}
 
-	public void discover(IExecute exec) {
+	public void discover(ICommandExecution cmdExec) {
 		// Read the root of the network
-		if (exec.execute(1, "owdir", "-s", myHost, "/") == 0) {
+		IExecute exec = cmdExec.getExec();
+		if (exec.execute(1, cmdExec.getOwDir(), "-s", myHost, "/") == 0) {
 			createItems(exec.getOutput());
 			// Start recursive discovery of devices
-			myChild.values().forEach(item -> item.discover(exec));
+			myChild.values().forEach(item -> item.discover(cmdExec));
 
 			// Make a one-time traversal to get all the found devices.
 			DeviceGatherer gatherer = new DeviceGatherer();

@@ -29,15 +29,13 @@ class JOwShell implements ILogger, ICommandExecution {
 			Discovery discovery = new Discovery(args[0], this, this);
 			if (discovery.discoverTree()) {
 				HashMap<String, OwDevice> device = discovery.getNetwork().getAllDevices();
-				if( args[1].equals("-") ) {
+				if (args[1].equals("-")) {
 					device.values().forEach(this::printData);
-				}
-				else {
+				} else {
 					OwDevice dev = discovery.getNetwork().getAllDevices().get(args[1]);
-					if( dev != null) {
+					if (dev != null) {
 						printData(dev);
-					}
-					else{
+					} else {
 						System.out.println("The specified device does not exist (check casing)");
 					}
 				}
@@ -55,13 +53,15 @@ class JOwShell implements ILogger, ICommandExecution {
 	private void printData(OwDevice d) {
 		HashMap<String, OwData> data = d.getData();
 
-		System.out.println("====" + d.getName() + "====== ");
+		System.out.println("==== Printing readable attributes for device "+ d.getName() + "====== ");
 		exec.setTimeout(2000); // Some read operations takes longer, such as temperature conversions.
 
 		for (String name : data.keySet()) {
 			OwData owData = data.get(name);
-			String readData = owData.read(this);
-			System.out.println(owData.getFullPath() + ":" + readData);
+			if (owData.isReadable(this)) {
+				String readData = owData.read(this);
+				System.out.println(owData.getFullPath() + ":" + readData);
+			}
 		}
 	}
 

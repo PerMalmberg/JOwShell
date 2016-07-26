@@ -97,6 +97,9 @@ public class OwData extends OwItem {
 					myLogger.error(e);
 				}
 			}
+			else {
+				myLogger.error("Could not read data details for " + getFullPath());
+			}
 		}
 
 		return structInfo != null;
@@ -106,6 +109,22 @@ public class OwData extends OwItem {
 		String parentPath = getParentDevice().getFullPath();
 		String propertyPath = getFullPath().replace(parentPath, "");
 		return propertyPath;
+	}
+
+	public boolean isReadable(ICommandExecution cmdExec) {
+		boolean res = false;
+		if (getDataDetails(cmdExec)) {
+			res = structInfo.isReadable();
+		}
+		return res;
+	}
+
+	public boolean isWritable(ICommandExecution cmdExec) {
+		boolean res = false;
+		if (getDataDetails(cmdExec)) {
+			res = structInfo.isWriteable();
+		}
+		return res;
 	}
 
 }

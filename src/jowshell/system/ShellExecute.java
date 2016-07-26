@@ -8,7 +8,6 @@ import logging.ILogger;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +15,8 @@ import java.util.concurrent.TimeUnit;
 public class ShellExecute implements IExecute {
 	private final List<String> myCommand = new ArrayList<>();
 	private Exception myLastException = null;
-	private final List<String> myOutput = new ArrayList<>();
+	private List<String> myOutput = new ArrayList<>();
+	private List<String> myError = new ArrayList<>();
 	private int myTimeout = 1000;
 	private final ILogger myLogger;
 
@@ -26,19 +26,24 @@ public class ShellExecute implements IExecute {
 
 	private int execute(int defaultReturnValue) {
 		myLastException = null;
-		myOutput.clear();
+
+		// Create new lists so we don't change a copy of the output currently held by someone else.
+		myOutput = new ArrayList<>();
+		myError = new ArrayList<>();
 
 		int res = defaultReturnValue;
 		StreamReader std = null;
+		StreamReader err = null;
 
 		try {
 			ProcessBuilder pb = new ProcessBuilder();
 			pb.command(myCommand);
-			pb.redirectErrorStream(true);
 			Process p = pb.start();
 
 			std = new StreamReader(p.getInputStream());
 			std.start();
+			err = new StreamReader(p.getErrorStream());
+			err.start();
 
 			myLogger.debug("Executing with timeout of " + myTimeout + "ms: " + myCommand.toString());
 
@@ -57,6 +62,14 @@ public class ShellExecute implements IExecute {
 				try {
 					std.join();
 					myOutput.addAll(std.getOutput());
+				} catch (InterruptedException e) {
+					myLogger.error(e);
+				}
+			}
+			if (err != null) {
+				try {
+					err.join();
+					myError.addAll(err.getOutput());
 				} catch (InterruptedException e) {
 					myLogger.error(e);
 				}
@@ -85,5 +98,9 @@ public class ShellExecute implements IExecute {
 
 	public List<String> getOutput() {
 		return myOutput;
+	}
+
+	public List<String> getError() {
+		return myError;
 	}
 }

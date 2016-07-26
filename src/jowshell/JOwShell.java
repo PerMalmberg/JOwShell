@@ -23,20 +23,32 @@ class JOwShell implements ILogger, ICommandExecution {
 
 	public void exec(String[] args) {
 		exec = new ShellExecute(this);
-		System.out.println("JOwShell: Java frontend for ow-shell (OWFS shell commands)");
+		System.out.println("JOwShell: Sample program/Java frontend for ow-shell (OWFS shell commands)");
 
-		if (args.length == 1) {
+		if (args.length == 2) {
 			Discovery discovery = new Discovery(args[0], this, this);
 			if (discovery.discoverTree()) {
 				HashMap<String, OwDevice> device = discovery.getNetwork().getAllDevices();
-				device.values().forEach(this::printData);
+				if( args[1].equals("-") ) {
+					device.values().forEach(this::printData);
+				}
+				else {
+					OwDevice dev = discovery.getNetwork().getAllDevices().get(args[1]);
+					if( dev != null) {
+						printData(dev);
+					}
+					else{
+						System.out.println("The specified device does not exist (check casing)");
+					}
+				}
 				System.exit(0);
 			} else {
 				error("Discovery failed");
 				System.exit(1);
 			}
 		} else {
-			System.out.println("Usage: JOwShell <host>");
+			System.out.println("Usage: JOwShell <host> <pathToDevice | ->");
+			System.out.println("where - means all devices");
 		}
 	}
 

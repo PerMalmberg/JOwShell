@@ -47,26 +47,28 @@ public class TestExecutor implements IExecute {
 		byte[] data = null;
 
 		String path = findPath(cmd);
-		Path p = Paths.get(myRoot, path);
-		File f = p.toFile();
-		if (f.exists()) {
-			try (FileInputStream fi = new FileInputStream(f)) {
-				data = new byte[(int) f.length()];
-				fi.read(data);
-			} catch (Exception e) {
-				// Nada
-				data = null;
+		if( path != null) {
+			Path p = Paths.get(myRoot, path);
+			File f = p.toFile();
+			if (f.exists()) {
+				try (FileInputStream fi = new FileInputStream(f)) {
+					data = new byte[(int) f.length()];
+					fi.read(data);
+				} catch (Exception e) {
+					// Nada
+					data = null;
+				}
 			}
-		}
 
-		boolean asHex = cmd.contains("--hex");
-		if (data != null) {
-			if (asHex) {
-				myOutput.add(bytesToHex(data));
-			} else {
-				myOutput.add(new String(data));
+			boolean asHex = cmd.contains("--hex");
+			if (data != null) {
+				if (asHex) {
+					myOutput.add(bytesToHex(data));
+				} else {
+					myOutput.add(new String(data));
+				}
+				res = true;
 			}
-			res = true;
 		}
 
 		return res;
@@ -124,6 +126,11 @@ public class TestExecutor implements IExecute {
 
 	public List<String> getOutput() {
 		return myOutput;
+	}
+
+	@Override
+	public List<String> getError() {
+		return null;
 	}
 
 	public static String bytesToHex(byte[] bytes) {

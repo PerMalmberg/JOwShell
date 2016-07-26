@@ -60,4 +60,12 @@ public class StructureInfo {
 	public Changeability getChangeability() {
 		return myChangeability;
 	}
+
+	public boolean isReadable() {
+		return getAccess() == Access.rw || getAccess() == Access.ro;
+	}
+
+	public boolean isWriteable() {
+		return getAccess() == Access.rw || getAccess() == Access.wo;
+	}
 }

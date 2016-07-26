@@ -24,5 +24,15 @@ public interface IExecute {
 
 	Exception getLastException();
 
+	/**
+	 * Gets the output
+	 * @return
+	 */
 	List<String> getOutput();
+
+	/**
+	 * Gets the error output
+	 * @return
+	 */
+	List<String> getError();
 }

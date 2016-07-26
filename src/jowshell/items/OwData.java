@@ -14,14 +14,21 @@ import java.util.List;
 
 public class OwData extends OwItem {
 	private StructureInfo structInfo = null;
+	private final OwDirectory myParent;
 
-	public OwData(String fullPath, String host, ILogger logger) {
+	public OwData(OwDirectory parent, String fullPath, String host, ILogger logger) {
 		super(fullPath, host, logger);
+		myParent = parent;
 	}
 
 	@Override
 	protected boolean traverseTreeWithActor(IItemActor actor) {
 		return !actor.act(this) || traverseTree(actor);
+	}
+
+	@Override
+	public OwDevice getParentDevice() {
+		return myParent.getParentDevice();
 	}
 
 	/**
@@ -48,17 +55,31 @@ public class OwData extends OwItem {
 	}
 
 	private boolean readData(ICommandExecution exec, StructureInfo structInfo) {
+		boolean res = false;
 
-		List<String> cmd = new ArrayList<>();
-		cmd.add(exec.getOwRead());
-		cmd.add("-s");
-		cmd.add(myHost);
-		if (structInfo.getType() == DataType.b) {
-			cmd.add("--hex");
+		if (structInfo.isReadable()) {
+			res = executeRead(exec, structInfo.getType() == DataType.b);
+		} else {
+			myLogger.error(getFullPath() + " is not readable.");
 		}
-		cmd.add(getFullPath());
 
-		return exec.getExec().execute(1, cmd.toArray(new String[cmd.size()])) == 0;
+		return res;
+	}
+
+	public boolean write(ICommandExecution cmdExec, String value) {
+		boolean res = false;
+		if (getDataDetails(cmdExec)) {
+			if (structInfo.isWriteable()) {
+				IExecute exec = cmdExec.getExec();
+				if (exec.execute(1, cmdExec.getOwWrite(), getFullPath(), value) != 0) {
+					myLogger.error("Failed to write to " + getFullPath());
+				}
+			} else {
+				myLogger.error(getFullPath() + " it is not writable");
+			}
+		}
+
+		return res;
 	}
 
 	private boolean getDataDetails(ICommandExecution cmdExec) {
@@ -66,7 +87,9 @@ public class OwData extends OwItem {
 			myLogger.debug("Reading structure info for " + getFullPath());
 			// Read structure info for this data item
 			IExecute exec = cmdExec.getExec();
-			if (exec.execute(1, cmdExec.getOwRead(), "-s", myHost, "/structure/" + getFamilyFromLastDeviceInPath() + "/" + getFullPropertyName()) == 0) {
+			String path = "/structure/" + myParent.getFamily() + "/" + getFullPropertyName();
+
+			if (exec.execute(1, cmdExec.getOwRead(), "-s", myHost, path) == 0) {
 				String info = exec.getOutput().get(0);
 				try {
 					structInfo = new StructureInfo(info);
@@ -80,26 +103,9 @@ public class OwData extends OwItem {
 	}
 
 	public String getFullPropertyName() {
-		String[] part = getFullPath().split("/");
-
-		StringBuilder sb = new StringBuilder();
-
-		boolean found = false;
-
-		for (int i = part.length - 1; !found && i >= 0; --i) {
-			if (matchesDeviceAddressWithFamily(part[i])) {
-				found = true;
-			} else {
-				if (sb.length() > 0) {
-					sb.insert(0, "/");
-					sb.insert(0, part[i]);
-				} else {
-					sb.append(part[i]);
-				}
-			}
-		}
-
-		return sb.toString();
+		String parentPath = getParentDevice().getFullPath();
+		String propertyPath = getFullPath().replace(parentPath, "");
+		return propertyPath;
 	}
 
 }

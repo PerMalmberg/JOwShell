@@ -4,8 +4,8 @@
 package jowshell.items.DataTypes;
 
 public enum Access {
-	rw,
-	wo,
-	ro,
-	oo
+	rw, // read-write
+	wo, // write-only
+	ro, // read only
+	oo // no access
 }

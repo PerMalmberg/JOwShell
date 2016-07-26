@@ -5,16 +5,16 @@ package jowshell.items;
 
 import jowshell.actors.IItemActor;
 import jowshell.system.ICommandExecution;
+import jowshell.system.IExecute;
 import logging.ILogger;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 public abstract class OwItem {
-	private final Pattern myAddressWithFamilyPattern = Pattern.compile("^([a-zA-Z0-9]{2}\\.[a-zA-Z0-9]{12})$");
 	protected final HashMap<String, OwItem> myChild = new HashMap<>();
 	private final String myFullPath;
 	protected final String myHost;
@@ -47,22 +47,50 @@ public abstract class OwItem {
 		myChild.values().forEach(item -> discover(execute));
 	}
 
-	protected boolean isPathToDevice(String fullPath) {
-		Path p = Paths.get(fullPath);
-		return matchesDeviceAddressWithFamily(p.getFileName().toString());
-	}
+	protected boolean isPathToDevice(String fullPath, ICommandExecution cmdExec) {
+		// Since a device may be reported as an alias, we can't rely on the Family.Address to be present in the path.
+		boolean isDevice = false;
 
-	protected boolean matchesDeviceAddressWithFamily(String address) {
-		address = removeLeading(address, '/');
-		Matcher m = myAddressWithFamilyPattern.matcher(address);
-		return m.matches();
-	}
+		// A device has both address and alias properties.
+		String addressPath = Paths.get(fullPath, "address").toString().replace("\\", "/");
+		String aliasPath = Paths.get(fullPath, "alias").toString().replace("\\", "/");
 
-	protected String removeLeading(String s, char c) {
-		if (s.startsWith(String.valueOf(c))) {
-			s = s.substring(1, s.length());
+		if (executeDir(cmdExec, fullPath)) {
+			IExecute exec = cmdExec.getExec();
+			isDevice = exec.getOutput().contains(addressPath) && exec.getOutput().contains(aliasPath);
 		}
-		return s;
+
+		return isDevice;
+	}
+
+	protected boolean executeDir(ICommandExecution cmdExec, String fullPath) {
+		IExecute exec = cmdExec.getExec();
+		return exec.execute(1, cmdExec.getOwDir(), "--dir", "-s", myHost, fullPath) == 0;
+	}
+
+	protected boolean executeRead(ICommandExecution cmdExec, boolean isHex) {
+		List<String> cmd = new ArrayList<>();
+		cmd.add(cmdExec.getOwRead());
+		return executeIO(cmdExec, isHex, cmd);
+	}
+
+	protected boolean executeWrite(ICommandExecution cmdExec, boolean isHex) {
+		List<String> cmd = new ArrayList<>();
+		cmd.add(cmdExec.getOwWrite());
+		return executeIO(cmdExec, isHex, cmd);
+	}
+
+	private boolean executeIO(ICommandExecution cmdExec, boolean isHex, List<String> cmd) {
+		cmd.add("-s");
+		cmd.add(myHost);
+		if (isHex) {
+			cmd.add("--hex");
+		}
+		cmd.add(getFullPath());
+
+		IExecute exec = cmdExec.getExec();
+		boolean res = exec.execute(1, cmd.toArray(new String[cmd.size()])) == 0;
+		return res;
 	}
 
 	public HashMap<String, OwItem> getChildren() {
@@ -91,24 +119,5 @@ public abstract class OwItem {
 		return done;
 	}
 
-	protected String getFamilyFromLastDeviceInPath() {
-		String[] part = getFullPath().split("/");
-
-		String lastDeviceAddress = null;
-
-		for (int i = part.length - 1; lastDeviceAddress == null && i >= 0; --i) {
-			if (matchesDeviceAddressWithFamily(part[i])) {
-				lastDeviceAddress = part[i];
-			}
-		}
-
-		String family = null;
-
-		if (lastDeviceAddress != null) {
-			part = lastDeviceAddress.split(Pattern.quote("."));
-			family = part[0];
-		}
-
-		return family;
-	}
+	public abstract OwDevice getParentDevice();
 }

@@ -24,11 +24,11 @@ public class ShellExecuteTest implements ILogger {
 		IExecute se = new ShellExecute(this);
 		se.setTimeout(1000);
 		assertEquals(0, se.execute(1, "java", "-version"));
-		assertTrue(se.getOutput().toString().contains("java version"));
+		assertTrue(se.getError().toString().contains("java version"));
 		assertEquals(null, se.getLastException());
 		assertEquals(0, se.execute(1, "java", "-help"));
 		assertFalse(se.getOutput().toString().contains("java version"));
-		assertTrue(se.getOutput().toString().contains("Usage:"));
+		assertTrue(se.getError().toString().contains("Usage:"));
 		assertEquals(null, se.getLastException());
 	}
 

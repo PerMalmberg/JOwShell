@@ -5,14 +5,23 @@ package jowshell.items;
 
 import jowshell.actors.IItemActor;
 import jowshell.actors.PropertyGatherer;
+import jowshell.system.ICommandExecution;
+import jowshell.system.IExecute;
 import logging.ILogger;
 
 import java.util.HashMap;
 
 public class OwDevice extends OwDirectory {
 
-	public OwDevice(String fullPath, String host, ILogger logger) {
-		super(fullPath, host, logger);
+	public OwDevice( OwDirectory parent, String fullPath, String family, String host, ILogger logger) {
+		super( parent, fullPath, family, host, logger);
+
+		if( getFullPath().endsWith("/")) {
+			int foo = 0;
+		}
+		else {
+			int foo = 1;
+		}
 	}
 
 	@Override
@@ -28,5 +37,11 @@ public class OwDevice extends OwDirectory {
 		}
 
 		return props.getData();
+	}
+
+	@Override
+	public OwDevice getParentDevice() {
+		// Stop traversal when we reach a device.
+		return this;
 	}
 }

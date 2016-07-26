@@ -16,9 +16,8 @@ import java.util.List;
 public class Network extends OwDirectory {
 	private HashMap<String, OwDevice> myAllDevices = new HashMap<>();
 
-	public Network( String host, ILogger logger ) {
-
-		super("/", host, logger);
+	public Network(String host, ILogger logger) {
+		super(null, "/", "NoFamily", host, logger);
 	}
 
 	public boolean hasDevices() {
@@ -32,9 +31,9 @@ public class Network extends OwDirectory {
 
 	public void discover(ICommandExecution cmdExec) {
 		// Read the root of the network
-		IExecute exec = cmdExec.getExec();
-		if (exec.execute(1, cmdExec.getOwDir(), "-s", myHost, "/") == 0) {
-			createItems(exec.getOutput());
+		if (executeDir(cmdExec, "/")) {
+			IExecute exec = cmdExec.getExec();
+			createItems(exec.getOutput(), cmdExec);
 			// Start recursive discovery of devices
 			myChild.values().forEach(item -> item.discover(cmdExec));
 
@@ -49,12 +48,12 @@ public class Network extends OwDirectory {
 		return myAllDevices;
 	}
 
-	private void createItems(List<String> data) {
+	private void createItems(List<String> data, ICommandExecution cmdExec) {
 		for (String s : data) {
 			// We only want to read the parts of the network that exists
 			// directly under the root or under a 1-Wire switch.
-			if (isPathToDevice(s)) {
-				createItemFormPath(s);
+			if (isPathToDevice(s, cmdExec)) {
+				createItemFromPath(s, cmdExec);
 			}
 		}
 	}

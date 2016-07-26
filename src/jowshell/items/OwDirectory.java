@@ -8,27 +8,49 @@ import jowshell.system.ICommandExecution;
 import jowshell.system.IExecute;
 import logging.ILogger;
 
-public class OwDirectory extends OwItem {
+import java.nio.file.Paths;
 
-	public OwDirectory(String fullPath, String host, ILogger logger) {
+public class OwDirectory extends OwItem {
+	protected String myCurrentParentFamily;
+	protected OwDirectory myParent;
+
+	public OwDirectory(OwDirectory parent, String fullPath, String currentParentFamily, String host, ILogger logger) {
 		super(fullPath, host, logger);
+		myParent = parent;
+		myCurrentParentFamily = currentParentFamily;
 	}
 
-	protected void createItemFormPath(String fullPath) {
-		if (isPathToDevice(fullPath)) {
-			add(new OwDevice(fullPath, myHost, myLogger));
+	protected void createItemFromPath(String fullPath, ICommandExecution cmdExec) {
+		if (isPathToDevice(fullPath, cmdExec)) {
+			String family = readFamily(fullPath, cmdExec);
+			add(new OwDevice(this, fullPath, family, myHost, myLogger));
 		} else if (fullPath.endsWith("/")) {
-			add(new OwDirectory(fullPath, myHost, myLogger));
+			add(new OwDirectory(this, fullPath, myCurrentParentFamily, myHost, myLogger));
 		} else {
-			add(new OwData(fullPath, myHost, myLogger));
+			add(new OwData(this, fullPath, myHost, myLogger));
 		}
+	}
+
+	protected String readFamily(String fullPath, ICommandExecution cmdExec) {
+		IExecute exec = cmdExec.getExec();
+		String family = null;
+
+		String familyPath = Paths.get(fullPath, "family").toString().replace("\\", "/");
+
+		if (exec.execute(1, cmdExec.getOwRead(), "-s", myHost, familyPath) == 0) {
+			family = exec.getOutput().get(0);
+		}
+
+		return family;
 	}
 
 	@Override
 	public void discover(ICommandExecution cmdExec) {
 		IExecute exec = cmdExec.getExec();
-		if (exec.execute(1, cmdExec.getOwDir(), "--dir", "-s", myHost, getFullPath()) == 0) {
-			exec.getOutput().forEach(this::createItemFormPath);
+		// We'll be executing owdir on non-directories, but that is quicker than first reading the
+		// StructureInfo to determine if it is actually a directory.
+		if (executeDir(cmdExec, getFullPath())) {
+			exec.getOutput().forEach(item -> createItemFromPath(item, cmdExec));
 			myChild.values().forEach(item -> item.discover(cmdExec));
 		}
 	}
@@ -36,5 +58,14 @@ public class OwDirectory extends OwItem {
 	@Override
 	protected boolean traverseTreeWithActor(IItemActor actor) {
 		return !actor.act(this) || traverseTree(actor);
+	}
+
+	@Override
+	public OwDevice getParentDevice() {
+		return myParent.getParentDevice();
+	}
+
+	public String getFamily() {
+		return myCurrentParentFamily;
 	}
 }

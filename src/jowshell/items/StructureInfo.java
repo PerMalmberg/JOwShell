@@ -1,13 +1,13 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package owshell2mqtt.items;
+package jowshell.items;
 
 // http://owfs.org/index.php?page=structure-directory
 
-import owshell2mqtt.items.DataTypes.Access;
-import owshell2mqtt.items.DataTypes.Changeability;
-import owshell2mqtt.items.DataTypes.DataType;
+import jowshell.items.DataTypes.Access;
+import jowshell.items.DataTypes.Changeability;
+import jowshell.items.DataTypes.DataType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,7 +1,7 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package owshell2mqtt;
+package jowshell;
 
 import java.io.BufferedReader;
 import java.io.IOException;

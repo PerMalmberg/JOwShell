@@ -1,12 +1,12 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package owshell2mqtt.actors;
+package jowshell.actors;
 
-import owshell2mqtt.items.OwData;
-import owshell2mqtt.items.OwDevice;
-import owshell2mqtt.items.OwDirectory;
-import owshell2mqtt.items.OwItem;
+import jowshell.items.OwData;
+import jowshell.items.OwDevice;
+import jowshell.items.OwDirectory;
+import jowshell.items.OwItem;
 
 public interface IItemActor {
 	/**

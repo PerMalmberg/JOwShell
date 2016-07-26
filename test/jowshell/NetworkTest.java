@@ -1,11 +1,11 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package owshell2mqtt;
+package jowshell;
 
 import org.junit.Test;
-import owshell2mqtt.items.OwData;
-import owshell2mqtt.items.OwDevice;
+import jowshell.items.OwData;
+import jowshell.items.OwDevice;
 
 import java.util.HashMap;
 

@@ -1,11 +1,11 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package owshell2mqtt;
+package jowshell;
 
 import org.junit.Test;
-import owshell2mqtt.system.IExecute;
-import owshell2mqtt.system.ShellExecute;
+import jowshell.system.IExecute;
+import jowshell.system.ShellExecute;
 
 import static org.junit.Assert.*;
 

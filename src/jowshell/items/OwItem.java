@@ -1,10 +1,10 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package owshell2mqtt.items;
+package jowshell.items;
 
-import owshell2mqtt.actors.IItemActor;
-import owshell2mqtt.system.IExecute;
+import jowshell.actors.IItemActor;
+import jowshell.system.IExecute;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

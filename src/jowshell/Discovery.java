@@ -1,9 +1,9 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package owshell2mqtt;
+package jowshell;
 
-import owshell2mqtt.system.IExecute;
+import jowshell.system.IExecute;
 
 public class Discovery {
 	private final IExecute myExec;

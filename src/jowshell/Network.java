@@ -1,12 +1,12 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package owshell2mqtt;
+package jowshell;
 
-import owshell2mqtt.actors.DeviceGatherer;
-import owshell2mqtt.items.OwDevice;
-import owshell2mqtt.items.OwDirectory;
-import owshell2mqtt.system.IExecute;
+import jowshell.actors.DeviceGatherer;
+import jowshell.items.OwDevice;
+import jowshell.items.OwDirectory;
+import jowshell.system.IExecute;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +14,8 @@ import java.util.List;
 public class Network extends OwDirectory {
 	private HashMap<String, OwDevice> myAllDevices = new HashMap<>();
 
-	public Network( String host) {
+	public Network( String host ) {
+
 		super("/", host);
 	}
 

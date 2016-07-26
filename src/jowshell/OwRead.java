@@ -1,12 +1,11 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package owshell2mqtt;
+package jowshell;
 
-import owshell2mqtt.items.DataTypes.DataType;
-import owshell2mqtt.items.StructureInfo;
-import owshell2mqtt.system.IExecute;
-import owshell2mqtt.system.ShellExecute;
+import jowshell.items.DataTypes.DataType;
+import jowshell.items.StructureInfo;
+import jowshell.system.IExecute;
 
 import java.util.ArrayList;
 import java.util.List;

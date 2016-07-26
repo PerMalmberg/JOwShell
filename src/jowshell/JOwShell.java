@@ -23,7 +23,7 @@ class JOwShell implements ILogger, ICommandExecution {
 
 	public void exec(String[] args) {
 		exec = new ShellExecute(this);
-		System.out.println("JOwShell: Sample program/Java frontend for ow-shell (OWFS shell commands)");
+		System.out.println("JOwShell: Java wrapper for ow-shell (OWFS shell commands)");
 
 		if (args.length == 2) {
 			Discovery discovery = new Discovery(args[0], this, this);

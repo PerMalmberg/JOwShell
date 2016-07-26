@@ -4,8 +4,11 @@
 package jowshell.system;
 
 import jowshell.StreamReader;
+import logging.ILogger;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -15,13 +18,17 @@ public class ShellExecute implements IExecute {
 	private Exception myLastException = null;
 	private final List<String> myOutput = new ArrayList<>();
 	private int myTimeout = 1000;
+	private final ILogger myLogger;
+
+	public ShellExecute(ILogger logger) {
+		myLogger = logger;
+	}
 
 	private int execute(int defaultReturnValue) {
 		myLastException = null;
 		myOutput.clear();
 
 		int res = defaultReturnValue;
-
 		StreamReader std = null;
 
 		try {
@@ -31,22 +38,27 @@ public class ShellExecute implements IExecute {
 			Process p = pb.start();
 
 			std = new StreamReader(p.getInputStream());
-
 			std.start();
+
+			myLogger.debug("Executing with timeout of " + myTimeout + "ms: " + myCommand.toString());
 
 			if (p.waitFor(myTimeout, TimeUnit.MILLISECONDS)) {
 				res = p.exitValue();
+				myLogger.debug("Exit code:" + res);
+			} else {
+				myLogger.error("Command timed out");
 			}
-		} catch (Exception ex) {
+		} catch (InterruptedException | IOException ex) {
+			myLogger.error("Execution failed.");
+			myLogger.error(ex);
 			myLastException = ex;
 		} finally {
 			if (std != null) {
 				try {
 					std.join();
 					myOutput.addAll(std.getOutput());
-
 				} catch (InterruptedException e) {
-					// Do nothing
+					myLogger.error(e);
 				}
 			}
 		}

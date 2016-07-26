@@ -5,13 +5,14 @@ package jowshell.items;
 
 import jowshell.actors.IItemActor;
 import jowshell.actors.PropertyGatherer;
+import logging.ILogger;
 
 import java.util.HashMap;
 
 public class OwDevice extends OwDirectory {
 
-	public OwDevice(String fullPath, String host) {
-		super(fullPath, host);
+	public OwDevice(String fullPath, String host, ILogger logger) {
+		super(fullPath, host, logger);
 	}
 
 	@Override

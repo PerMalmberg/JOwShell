@@ -14,10 +14,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class NetworkTest {
-
 	@Test
 	public void ReadRoot() throws Exception {
-		Discovery disc = new Discovery("localhost", new TestExecutor("./testdata/root"));
+		Discovery disc = new Discovery("localhost", new TestExecutor("./testdata/root"), new TestLogger());
 		assertTrue(disc.discoverTree());
 		Network net = disc.getNetwork();
 		assertTrue( net.getChildren().containsKey("1D.2D100D000000"));
@@ -30,7 +29,7 @@ public class NetworkTest {
 
 	@Test
 	public void TestFindDevice() throws Exception {
-		Discovery disc = new Discovery("localhost", new TestExecutor("./testdata/root"));
+		Discovery disc = new Discovery("localhost", new TestExecutor("./testdata/root"), new TestLogger());
 		assertTrue(disc.discoverTree());
 		Network net = disc.getNetwork();
 		assertNotNull(net.getAllDevices().get("1F.58E303000000"));
@@ -38,7 +37,7 @@ public class NetworkTest {
 
 	@Test
 	public void TestGetProperies() throws Exception {
-		Discovery disc = new Discovery("localhost", new TestExecutor("./testdata/root"));
+		Discovery disc = new Discovery("localhost", new TestExecutor("./testdata/root"), new TestLogger());
 		assertTrue(disc.discoverTree());
 		Network net = disc.getNetwork();
 
@@ -53,7 +52,7 @@ public class NetworkTest {
 
 	@Test
 	public void TestGetBinaryData() throws Exception {
-		Discovery disc = new Discovery("localhost", new TestExecutor("./testdata/root"));
+		Discovery disc = new Discovery("localhost", new TestExecutor("./testdata/root"), new TestLogger());
 		assertTrue(disc.discoverTree());
 		Network net = disc.getNetwork();
 

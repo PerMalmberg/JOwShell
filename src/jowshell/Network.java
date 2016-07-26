@@ -7,6 +7,7 @@ import jowshell.actors.DeviceGatherer;
 import jowshell.items.OwDevice;
 import jowshell.items.OwDirectory;
 import jowshell.system.IExecute;
+import logging.ILogger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +15,9 @@ import java.util.List;
 public class Network extends OwDirectory {
 	private HashMap<String, OwDevice> myAllDevices = new HashMap<>();
 
-	public Network( String host ) {
+	public Network( String host, ILogger logger ) {
 
-		super("/", host);
+		super("/", host, logger);
 	}
 
 	public boolean hasDevices() {

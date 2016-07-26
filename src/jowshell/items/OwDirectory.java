@@ -5,20 +5,21 @@ package jowshell.items;
 
 import jowshell.actors.IItemActor;
 import jowshell.system.IExecute;
+import logging.ILogger;
 
 public class OwDirectory extends OwItem {
 
-	public OwDirectory(String fullPath, String host) {
-		super(fullPath, host);
+	public OwDirectory(String fullPath, String host, ILogger logger) {
+		super(fullPath, host, logger);
 	}
 
 	protected void createItemFormPath(String fullPath) {
 		if (isPathToDevice(fullPath)) {
-			add(new OwDevice(fullPath, myHost));
+			add(new OwDevice(fullPath, myHost, myLogger));
 		} else if (fullPath.endsWith("/")) {
-			add(new OwDirectory(fullPath, myHost));
+			add(new OwDirectory(fullPath, myHost, myLogger));
 		} else {
-			add(new OwData(fullPath, myHost));
+			add(new OwData(fullPath, myHost, myLogger));
 		}
 	}
 

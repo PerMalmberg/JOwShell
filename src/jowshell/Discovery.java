@@ -4,15 +4,18 @@
 package jowshell;
 
 import jowshell.system.IExecute;
+import logging.ILogger;
 
 public class Discovery {
 	private final IExecute myExec;
+	private final ILogger myLogger;
 
 	private final Network myNetwork;
 
-	public Discovery(String host, IExecute execute) {
+	public Discovery(String host, IExecute execute, ILogger logger) {
 		myExec = execute;
-		myNetwork = new Network(host);
+		myLogger = logger;
+		myNetwork = new Network(host, myLogger);
 	}
 
 	public boolean discoverTree() {

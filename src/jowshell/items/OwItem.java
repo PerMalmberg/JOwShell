@@ -5,6 +5,7 @@ package jowshell.items;
 
 import jowshell.actors.IItemActor;
 import jowshell.system.IExecute;
+import logging.ILogger;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,10 +18,12 @@ public abstract class OwItem {
 	protected final HashMap<String, OwItem> myChild = new HashMap<>();
 	private final String myFullPath;
 	protected final String myHost;
+	protected ILogger myLogger;
 
-	public OwItem(String fullPath, String host) {
+	public OwItem(String fullPath, String host, ILogger logger) {
 		myFullPath = fullPath;
 		myHost = host;
+		myLogger = logger;
 	}
 
 	public String getFullPath() {

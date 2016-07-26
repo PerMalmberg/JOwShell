@@ -3,17 +3,19 @@
 
 package jowshell.items;
 
-import jowshell.OwRead;
 import jowshell.actors.IItemActor;
+import jowshell.items.DataTypes.DataType;
 import jowshell.system.IExecute;
+import logging.ILogger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OwData extends OwItem {
 	private StructureInfo structInfo = null;
 
-	public OwData(String fullPath, String host) {
-		super(fullPath, host);
+	public OwData(String fullPath, String host, ILogger logger) {
+		super(fullPath, host, logger);
 	}
 
 	@Override
@@ -31,13 +33,12 @@ public class OwData extends OwItem {
 		String res = null;
 
 		if (getDataDetails(exec)) {
-			OwRead read = new OwRead(exec, myHost);
-			if (read.read(getFullPath(), structInfo)) {
-				List<String> readData = read.getData();
+			if (readData(exec, structInfo)) {
+				List<String> readData = exec.getOutput();
 				if (readData.size() > 0) {
 					res = readData.get(0);
 				} else {
-					// Empty data
+					myLogger.debug("No data from device");
 					res = null;
 				}
 			}
@@ -45,23 +46,35 @@ public class OwData extends OwItem {
 		return res;
 	}
 
-	private boolean getDataDetails(IExecute exec) {
-		boolean res = false;
+	private boolean readData(IExecute exec, StructureInfo structInfo) {
 
+		List<String> cmd = new ArrayList<>();
+		cmd.add("owread");
+		cmd.add("-s");
+		cmd.add(myHost);
+		if (structInfo.getType() == DataType.b) {
+			cmd.add("--hex");
+		}
+		cmd.add(getFullPath());
+
+		return exec.execute(1, cmd.toArray(new String[cmd.size()])) == 0;
+	}
+
+	private boolean getDataDetails(IExecute exec) {
 		if (structInfo == null) {
+			myLogger.debug("Reading structure info for " + getFullPath());
 			// Read structure info for this data item
 			if (exec.execute(1, "owread", "-s", myHost, "/structure/" + getFamilyFromLastDeviceInPath() + "/" + getFullPropertyName()) == 0) {
 				String info = exec.getOutput().get(0);
 				try {
 					structInfo = new StructureInfo(info);
-					res = true;
 				} catch (IllegalArgumentException e) {
-					// Nada
+					myLogger.error(e);
 				}
 			}
 		}
 
-		return res;
+		return structInfo != null;
 	}
 
 	public String getFullPropertyName() {

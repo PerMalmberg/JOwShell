@@ -4,7 +4,7 @@
 package jowshell.system;
 
 import jowshell.StreamReader;
-import logging.ILogger;
+import jowshell.logging.ILogger;
 
 import java.io.IOException;
 import java.util.ArrayList;

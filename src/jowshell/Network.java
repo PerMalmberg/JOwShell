@@ -8,7 +8,7 @@ import jowshell.items.OwDevice;
 import jowshell.items.OwDirectory;
 import jowshell.system.ICommandExecution;
 import jowshell.system.IExecute;
-import logging.ILogger;
+import jowshell.logging.ILogger;
 
 import java.util.HashMap;
 import java.util.List;

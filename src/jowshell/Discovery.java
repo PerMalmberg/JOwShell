@@ -4,7 +4,7 @@
 package jowshell;
 
 import jowshell.system.ICommandExecution;
-import logging.ILogger;
+import jowshell.logging.ILogger;
 
 public class Discovery {
 	private final ICommandExecution myExec;

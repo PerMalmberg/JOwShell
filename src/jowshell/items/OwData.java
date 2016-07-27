@@ -71,7 +71,10 @@ public class OwData extends OwItem {
 		if (getDataDetails(cmdExec)) {
 			if (structInfo.isWriteable()) {
 				IExecute exec = cmdExec.getExec();
-				if (exec.execute(1, cmdExec.getOwWrite(), getFullPath(), value) != 0) {
+				if (exec.execute(1, cmdExec.getOwWrite(), getFullPath(), value) == 0) {
+					res = true;
+				}
+				else {
 					myLogger.error("Failed to write to " + getFullPath());
 				}
 			} else {

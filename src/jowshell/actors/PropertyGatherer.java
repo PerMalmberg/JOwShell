@@ -30,7 +30,7 @@ public class PropertyGatherer implements IItemActor {
 
 	@Override
 	public boolean act(OwData data) {
-		myData.put(data.getName(), data);
+		myData.put(data.getFullPropertyName(), data);
 		return true;
 	}
 

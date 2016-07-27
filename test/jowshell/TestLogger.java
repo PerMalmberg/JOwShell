@@ -3,7 +3,7 @@
 
 package jowshell;
 
-import logging.ILogger;
+import jowshell.logging.ILogger;
 
 import java.util.Arrays;
 

@@ -5,9 +5,7 @@ package jowshell.items;
 
 import jowshell.actors.IItemActor;
 import jowshell.actors.PropertyGatherer;
-import jowshell.system.ICommandExecution;
-import jowshell.system.IExecute;
-import logging.ILogger;
+import jowshell.logging.ILogger;
 
 import java.util.HashMap;
 

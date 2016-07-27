@@ -3,7 +3,7 @@
 
 package jowshell;
 
-import logging.ILogger;
+import jowshell.logging.ILogger;
 import org.junit.Test;
 import jowshell.system.IExecute;
 import jowshell.system.ShellExecute;

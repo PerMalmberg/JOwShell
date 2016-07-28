@@ -20,6 +20,10 @@ public class PropertyGatherer implements IItemAcceptor {
 
 	@Override
 	public boolean accept(OwDirectory dir) {
+		// Recurse into directories
+		for( OwItem item : dir.getChildren().values()) {
+			item.visit(this);
+		}
 		return true;
 	}
 

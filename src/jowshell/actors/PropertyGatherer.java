@@ -10,26 +10,26 @@ import jowshell.items.OwItem;
 
 import java.util.HashMap;
 
-public class PropertyGatherer implements IItemActor {
+public class PropertyGatherer implements IItemAcceptor {
 	private final HashMap<String, OwData> myData = new HashMap<>();
 
 	@Override
-	public boolean act(OwItem item) {
+	public boolean accept(OwItem item) {
 		return true;
 	}
 
 	@Override
-	public boolean act(OwDirectory dir) {
+	public boolean accept(OwDirectory dir) {
 		return true;
 	}
 
 	@Override
-	public boolean act(OwDevice device) {
+	public boolean accept(OwDevice device) {
 		return true;
 	}
 
 	@Override
-	public boolean act(OwData data) {
+	public boolean accept(OwData data) {
 		myData.put(data.getFullPropertyName(), data);
 		return true;
 	}

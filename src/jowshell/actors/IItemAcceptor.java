@@ -8,14 +8,14 @@ import jowshell.items.OwDevice;
 import jowshell.items.OwDirectory;
 import jowshell.items.OwItem;
 
-public interface IItemActor {
+public interface IItemAcceptor {
 	/**
 	 * Performs an operation on the device.
 	 *
 	 * @param item The item
 	 * @return true if further operations should be performed, false if not.
 	 */
-	boolean act(OwItem item);
+	boolean accept(OwItem item);
 
 	/**
 	 * Performs an operation on the device.
@@ -23,7 +23,7 @@ public interface IItemActor {
 	 * @param dir The directory
 	 * @return true if further operations should be performed, false if not.
 	 */
-	boolean act(OwDirectory dir);
+	boolean accept(OwDirectory dir);
 
 	/**
 	 * Performs an operation on the device.
@@ -31,7 +31,7 @@ public interface IItemActor {
 	 * @param device The device
 	 * @return true if further operations should be performed, false if not.
 	 */
-	boolean act(OwDevice device);
+	boolean accept(OwDevice device);
 
 	/**
 	 * Performs an operation on the data.
@@ -39,5 +39,5 @@ public interface IItemActor {
 	 * @param data The data
 	 * @return true if further operations should be performed, false if not.
 	 */
-	boolean act(OwData data);
+	boolean accept(OwData data);
 }

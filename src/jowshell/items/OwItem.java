@@ -3,7 +3,8 @@
 
 package jowshell.items;
 
-import jowshell.actors.IItemActor;
+import jowshell.actors.IItemAcceptor;
+import jowshell.actors.PropertyGatherer;
 import jowshell.system.ICommandExecution;
 import jowshell.system.IExecute;
 import jowshell.logging.ILogger;
@@ -89,16 +90,15 @@ public abstract class OwItem {
 		cmd.add(getFullPath());
 
 		IExecute exec = cmdExec.getExec();
-		boolean res = exec.execute(1, cmd.toArray(new String[cmd.size()])) == 0;
-		return res;
+		return exec.execute(1, cmd.toArray(new String[cmd.size()])) == 0;
 	}
 
 	public HashMap<String, OwItem> getChildren() {
 		return myChild;
 	}
 
-	protected boolean traverseTreeWithActor(IItemActor actor) {
-		return !actor.act(this) || traverseTree(actor);
+	protected boolean traverseTreeWithActor(IItemAcceptor actor) {
+		return !visit(actor) || traverseTree(actor);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public abstract class OwItem {
 	 * @param actor The actor
 	 * @return true if the actor says to stop traversal, otherwise false.
 	 */
-	protected boolean traverseTree(IItemActor actor) {
+	protected boolean traverseTree(IItemAcceptor actor) {
 		OwItem[] children = myChild.values().toArray(new OwItem[myChild.values().size()]);
 
 		boolean done = false;
@@ -120,4 +120,6 @@ public abstract class OwItem {
 	}
 
 	public abstract OwDevice getParentDevice();
+
+	public abstract boolean visit(IItemAcceptor acceptor);
 }

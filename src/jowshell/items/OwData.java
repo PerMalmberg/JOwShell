@@ -3,7 +3,7 @@
 
 package jowshell.items;
 
-import jowshell.actors.IItemActor;
+import jowshell.actors.IItemAcceptor;
 import jowshell.items.DataTypes.DataType;
 import jowshell.system.ICommandExecution;
 import jowshell.system.IExecute;
@@ -21,8 +21,8 @@ public class OwData extends OwItem {
 	}
 
 	@Override
-	protected boolean traverseTreeWithActor(IItemActor actor) {
-		return !actor.act(this) || traverseTree(actor);
+	protected boolean traverseTreeWithActor(IItemAcceptor actor) {
+		return !actor.accept(this) || traverseTree(actor);
 	}
 
 	@Override
@@ -109,8 +109,7 @@ public class OwData extends OwItem {
 
 	public String getFullPropertyName() {
 		String parentPath = getParentDevice().getFullPath();
-		String propertyPath = getFullPath().replace(parentPath, "");
-		return propertyPath;
+		return getFullPath().replace(parentPath, "");
 	}
 
 	public boolean isReadable(ICommandExecution cmdExec) {
@@ -127,6 +126,11 @@ public class OwData extends OwItem {
 			res = structInfo.isWriteable();
 		}
 		return res;
+	}
+
+	@Override
+	public boolean visit(IItemAcceptor acceptor) {
+		return acceptor.accept(this);
 	}
 
 }

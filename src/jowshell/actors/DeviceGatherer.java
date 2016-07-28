@@ -10,27 +10,27 @@ import jowshell.items.OwItem;
 
 import java.util.HashMap;
 
-public class DeviceGatherer implements IItemActor {
+public class DeviceGatherer implements IItemAcceptor {
 	private final HashMap<String, OwDevice> myDevices = new HashMap<>();
 
 	@Override
-	public boolean act(OwItem item) {
+	public boolean accept(OwItem item) {
 		return true;
 	}
 
 	@Override
-	public boolean act(OwDirectory dir) {
+	public boolean accept(OwDirectory dir) {
 		return true;
 	}
 
 	@Override
-	public boolean act(OwDevice device) {
+	public boolean accept(OwDevice device) {
 		myDevices.put(device.getName(), device);
 		return true;
 	}
 
 	@Override
-	public boolean act(OwData data) {
+	public boolean accept(OwData data) {
 		return true;
 	}
 

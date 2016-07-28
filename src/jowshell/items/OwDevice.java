@@ -3,7 +3,7 @@
 
 package jowshell.items;
 
-import jowshell.actors.IItemActor;
+import jowshell.actors.IItemAcceptor;
 import jowshell.actors.PropertyGatherer;
 import jowshell.logging.ILogger;
 
@@ -13,25 +13,18 @@ public class OwDevice extends OwDirectory {
 
 	public OwDevice( OwDirectory parent, String fullPath, String family, String host, ILogger logger) {
 		super( parent, fullPath, family, host, logger);
-
-		if( getFullPath().endsWith("/")) {
-			int foo = 0;
-		}
-		else {
-			int foo = 1;
-		}
 	}
 
 	@Override
-	protected boolean traverseTreeWithActor(IItemActor actor) {
-		return !actor.act(this) || traverseTree(actor);
+	protected boolean traverseTreeWithActor(IItemAcceptor actor) {
+		return !actor.accept(this) || traverseTree(actor);
 	}
 
 	public HashMap<String, OwData> getData() {
 		PropertyGatherer props = new PropertyGatherer();
 
 		for (OwItem child : myChild.values()) {
-			child.traverseTreeWithActor(props);
+			child.visit( props );
 		}
 
 		return props.getData();
@@ -41,5 +34,10 @@ public class OwDevice extends OwDirectory {
 	public OwDevice getParentDevice() {
 		// Stop traversal when we reach a device.
 		return this;
+	}
+
+	@Override
+	public boolean visit(IItemAcceptor acceptor) {
+		return acceptor.accept(this);
 	}
 }

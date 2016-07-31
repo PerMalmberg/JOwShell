@@ -51,7 +51,7 @@ public class ShellExecute implements IExecute {
 				res = p.exitValue();
 				myLogger.debug("Exit code:" + res);
 			} else {
-				myLogger.error("Command timed out");
+				myLogger.error("Command timed out: " + myCommand );
 			}
 		} catch (InterruptedException | IOException ex) {
 			myLogger.error("Execution failed.");

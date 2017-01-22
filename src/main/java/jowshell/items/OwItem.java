@@ -4,7 +4,6 @@
 package jowshell.items;
 
 import jowshell.actors.IItemAcceptor;
-import jowshell.actors.PropertyGatherer;
 import jowshell.system.ICommandExecution;
 import jowshell.system.IExecute;
 import jowshell.logging.ILogger;

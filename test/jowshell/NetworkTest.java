@@ -14,7 +14,7 @@ import java.util.HashMap;
 import static org.junit.Assert.*;
 
 public class NetworkTest implements ICommandExecution {
-	private TestExecutor myTestExec = new TestExecutor("target/test-classes/root");
+	private TestExecutor myTestExec = new TestExecutor("./testdata/root");
 
 	@Test
 	public void ReadRoot() throws Exception {
